@@ -105,8 +105,8 @@ export default function Cart() {
     <div className="min-h-screen bg-slate-50">
       <Header />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-8">Keranjang Belanja</h1>
+      <div className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 w-full">
+        <h1 className="text-xl sm:text-3xl font-bold text-slate-900 mb-4 sm:mb-8">Keranjang Belanja</h1>
 
         {cartItems.length === 0 ? (
           <Card className="text-center py-16">
@@ -120,26 +120,26 @@ export default function Cart() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8 w-full">
             {/* Cart Items */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 w-full min-w-0">
               <Card>
                 <CardHeader>
-                  <CardTitle>Item dalam Keranjang ({cartItems.length})</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">Item dalam Keranjang ({cartItems.length})</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
+                <CardContent className="p-3 sm:p-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {cartItems.map((item) => (
-                      <div key={item.id} className="flex items-center space-x-4 p-4 border border-slate-200 rounded-lg">
+                      <div key={item.id} className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 border border-slate-200 rounded-lg">
                         <img
                           src={item.product.imageUrl || "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=100&h=100&fit=crop"}
                           alt={item.product.title}
-                          className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
                         />
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-slate-900">{item.product.title}</h3>
-                          <p className="text-sm text-slate-600 line-clamp-2">{item.product.description}</p>
-                          <p className="text-lg font-bold text-primary mt-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-slate-900 text-sm sm:text-base truncate">{item.product.title}</h3>
+                          <p className="text-xs sm:text-sm text-slate-600 line-clamp-2">{item.product.description}</p>
+                          <p className="text-base sm:text-lg font-bold text-primary mt-1 sm:mt-2">
                             Rp {parseFloat(item.product.price).toLocaleString()}
                           </p>
                         </div>
@@ -148,7 +148,7 @@ export default function Cart() {
                           size="sm"
                           onClick={() => removeFromCartMutation.mutate(item.productId)}
                           disabled={removeFromCartMutation.isPending}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0 p-2"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -160,30 +160,30 @@ export default function Cart() {
             </div>
 
             {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <Card className="sticky top-24">
+            <div className="lg:col-span-1 w-full">
+              <Card className="lg:sticky lg:top-24">
                 <CardHeader>
-                  <CardTitle>Ringkasan Pesanan</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">Ringkasan Pesanan</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4 mb-6">
+                <CardContent className="p-3 sm:p-6">
+                  <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Subtotal ({cartItems.length} item)</span>
-                      <span className="font-semibold">Rp {subtotal.toLocaleString()}</span>
+                      <span className="text-slate-600 text-sm sm:text-base">Subtotal ({cartItems.length} item)</span>
+                      <span className="font-semibold text-sm sm:text-base">Rp {subtotal.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Biaya Admin</span>
-                      <span className="font-semibold">Rp {adminFee.toLocaleString()}</span>
+                      <span className="text-slate-600 text-sm sm:text-base">Biaya Admin</span>
+                      <span className="font-semibold text-sm sm:text-base">Rp {adminFee.toLocaleString()}</span>
                     </div>
-                    <div className="border-t border-slate-200 pt-4">
+                    <div className="border-t border-slate-200 pt-3 sm:pt-4">
                       <div className="flex justify-between">
-                        <span className="text-lg font-semibold text-slate-900">Total</span>
-                        <span className="text-lg font-bold text-primary">Rp {total.toLocaleString()}</span>
+                        <span className="text-base sm:text-lg font-semibold text-slate-900">Total</span>
+                        <span className="text-base sm:text-lg font-bold text-primary">Rp {total.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <Button
                       className="w-full"
                       onClick={() => createOrderMutation.mutate()}

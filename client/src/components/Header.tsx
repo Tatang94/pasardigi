@@ -40,20 +40,20 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
-              <Store className="h-8 w-8 text-primary mr-2" />
-              <h1 className="text-2xl font-bold text-primary">DigitalMarket</h1>
+            <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity min-w-0 flex-shrink-0">
+              <Store className="h-6 w-6 sm:h-8 sm:w-8 text-primary mr-1 sm:mr-2" />
+              <h1 className="text-lg sm:text-2xl font-bold text-primary truncate">DigitalMarket</h1>
             </div>
           </Link>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-2xl mx-8">
-            <form onSubmit={handleSearch} className="relative">
+          <div className="hidden sm:flex flex-1 max-w-2xl mx-2 lg:mx-8">
+            <form onSubmit={handleSearch} className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
               <Input
                 type="text"
@@ -66,13 +66,13 @@ export default function Header() {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 sm:space-x-4 flex-shrink-0">
             {/* Cart */}
             <Link href="/cart">
-              <Button variant="ghost" size="sm" className="relative">
-                <ShoppingCart className="h-5 w-5" />
+              <Button variant="ghost" size="sm" className="relative p-2">
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartItems.length > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs bg-primary">
+                  <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-xs bg-primary">
                     {cartItems.length}
                   </Badge>
                 )}
@@ -80,20 +80,20 @@ export default function Header() {
             </Link>
 
             {/* Notifications */}
-            <Button variant="ghost" size="sm">
-              <Bell className="h-5 w-5" />
+            <Button variant="ghost" size="sm" className="hidden sm:flex p-2">
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
 
             {/* User Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                <Button variant="ghost" size="sm" className="flex items-center space-x-1 sm:space-x-2 p-1 sm:p-2">
                   <img
                     src={user?.profileImageUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"}
                     alt="Profile"
-                    className="w-7 h-7 rounded-full object-cover border border-slate-200"
+                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover border border-slate-200 flex-shrink-0"
                   />
-                  <span className="text-sm font-medium text-slate-700 hidden sm:block">
+                  <span className="text-sm font-medium text-slate-700 hidden md:block truncate max-w-20">
                     {user?.firstName || "User"}
                   </span>
                 </Button>

@@ -250,15 +250,15 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manajemen Pengguna</h1>
-          <p className="text-gray-600">Kelola semua pengguna, role, dan status akun</p>
+    <div className="container mx-auto py-4 sm:py-6 space-y-4 sm:space-y-6 px-2 sm:px-4 max-w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-3xl font-bold text-gray-900 truncate">Manajemen Pengguna</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Kelola semua pengguna, role, dan status akun</p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto flex-shrink-0">
               <UserPlus className="h-4 w-4 mr-2" />
               Tambah Pengguna
             </Button>
@@ -276,18 +276,18 @@ export default function UserManagement() {
             Total {users.length} pengguna terdaftar
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Pengguna</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Terakhir Login</TableHead>
-                  <TableHead>Tanggal Daftar</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
+                  <TableHead className="min-w-[200px]">Pengguna</TableHead>
+                  <TableHead className="min-w-[200px]">Email</TableHead>
+                  <TableHead className="min-w-[120px]">Role</TableHead>
+                  <TableHead className="min-w-[100px]">Status</TableHead>
+                  <TableHead className="min-w-[140px] hidden md:table-cell">Terakhir Login</TableHead>
+                  <TableHead className="min-w-[140px] hidden lg:table-cell">Tanggal Daftar</TableHead>
+                  <TableHead className="text-right min-w-[100px]">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -395,14 +395,14 @@ export default function UserManagement() {
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell className="text-sm text-gray-500">
+                    <TableCell className="text-sm text-gray-500 hidden md:table-cell">
                       {userData.lastLoginAt 
-                        ? new Date(userData.lastLoginAt as string).toLocaleDateString('id-ID')
+                        ? new Date(userData.lastLoginAt as unknown as string).toLocaleDateString('id-ID')
                         : "Belum pernah login"
                       }
                     </TableCell>
-                    <TableCell className="text-sm text-gray-500">
-                      {new Date(userData.createdAt as string).toLocaleDateString('id-ID')}
+                    <TableCell className="text-sm text-gray-500 hidden lg:table-cell">
+                      {new Date(userData.createdAt as unknown as string).toLocaleDateString('id-ID')}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">

@@ -46,32 +46,32 @@ export default function Products() {
       <Header />
       <CategoryNav />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 w-full">
         {/* Search Bar */}
-        <div className="mb-8">
-          <form onSubmit={handleSearch} className="flex gap-4">
-            <div className="flex-1 relative">
+        <div className="mb-6 sm:mb-8">
+          <form onSubmit={handleSearch} className="flex gap-2 sm:gap-4">
+            <div className="flex-1 relative min-w-0">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
               <Input
                 type="text"
                 placeholder="Cari produk digital..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 w-full"
               />
             </div>
-            <Button type="submit">Cari</Button>
+            <Button type="submit" className="flex-shrink-0">Cari</Button>
           </form>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 w-full">
           {/* Filters Sidebar */}
-          <div className="lg:w-64 flex-shrink-0">
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle>Filter Produk</CardTitle>
+          <div className="w-full lg:w-64 flex-shrink-0">
+            <Card className="lg:sticky lg:top-24">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base sm:text-lg">Filter Produk</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4 sm:space-y-6">
                 {/* Category Filter */}
                 <div>
                   <h4 className="text-sm font-medium text-slate-700 mb-3">Kategori</h4>
@@ -125,14 +125,14 @@ export default function Products() {
           </div>
 
           {/* Product Grid */}
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-slate-900">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
+              <h1 className="text-lg sm:text-2xl font-bold text-slate-900 truncate">
                 {searchTerm ? `Hasil pencarian: "${searchTerm}"` : "Semua Produk"}
               </h1>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-full sm:w-48">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -142,7 +142,7 @@ export default function Products() {
                     <SelectItem value="price-high">Harga Tertinggi</SelectItem>
                   </SelectContent>
                 </Select>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 justify-center sm:justify-start">
                   <Button
                     variant={viewMode === "grid" ? "default" : "outline"}
                     size="sm"
@@ -162,10 +162,10 @@ export default function Products() {
             </div>
 
             {isLoading ? (
-              <div className={`grid ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-6`}>
+              <div className={`grid ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"} gap-3 sm:gap-4 lg:gap-6 w-full`}>
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-white rounded-xl shadow-sm p-4 animate-pulse">
-                    <div className="w-full h-48 bg-slate-200 rounded-lg mb-4"></div>
+                  <div key={i} className="bg-white rounded-xl shadow-sm p-3 sm:p-4 animate-pulse w-full">
+                    <div className="w-full h-40 sm:h-48 bg-slate-200 rounded-lg mb-4"></div>
                     <div className="h-4 bg-slate-200 rounded mb-2"></div>
                     <div className="h-3 bg-slate-200 rounded mb-3"></div>
                     <div className="h-6 bg-slate-200 rounded"></div>
@@ -173,14 +173,14 @@ export default function Products() {
                 ))}
               </div>
             ) : products.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-slate-600 text-lg">
+              <div className="text-center py-12 px-4">
+                <p className="text-slate-600 text-base sm:text-lg">
                   {searchTerm ? `Tidak ada produk yang cocok dengan "${searchTerm}"` : "Belum ada produk tersedia."}
                 </p>
-                <p className="text-slate-500">Coba ubah filter atau kata kunci pencarian Anda.</p>
+                <p className="text-slate-500 text-sm sm:text-base">Coba ubah filter atau kata kunci pencarian Anda.</p>
               </div>
             ) : (
-              <div className={`grid ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"} gap-6`}>
+              <div className={`grid ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"} gap-3 sm:gap-4 lg:gap-6 w-full`}>
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} viewMode={viewMode} />
                 ))}

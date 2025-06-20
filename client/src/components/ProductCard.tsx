@@ -72,18 +72,18 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
 
   if (viewMode === "list") {
     return (
-      <Card className="overflow-hidden hover:shadow-lg transition-all duration-200">
-        <div className="flex">
+      <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 w-full">
+        <div className="flex flex-col sm:flex-row">
           <img
             src={product.imageUrl || "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=200&h=150&fit=crop"}
             alt={product.title}
-            className="w-48 h-36 object-cover flex-shrink-0"
+            className="w-full sm:w-48 h-32 sm:h-36 object-cover flex-shrink-0"
           />
-          <CardContent className="p-6 flex-1">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1 mr-4">
+          <CardContent className="p-3 sm:p-6 flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex-1 sm:mr-4 min-w-0">
                 {getCategoryBadge(product.categoryId)}
-                <h3 className="font-semibold text-slate-900 mt-2 mb-2">{product.title}</h3>
+                <h3 className="font-semibold text-slate-900 mt-2 mb-2 truncate">{product.title}</h3>
                 <p className="text-sm text-slate-600 line-clamp-2 mb-3">{product.description}</p>
                 <div className="flex items-center mb-2">
                   <Star className="h-4 w-4 text-amber-400 fill-current" />
@@ -92,14 +92,15 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
                   </span>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-primary mb-4">
+              <div className="flex flex-row sm:flex-col sm:text-right items-center sm:items-end justify-between sm:justify-start mt-3 sm:mt-0">
+                <p className="text-lg sm:text-2xl font-bold text-primary sm:mb-4">
                   Rp {parseFloat(product.price).toLocaleString()}
                 </p>
                 <Button
                   onClick={() => addToCartMutation.mutate()}
                   disabled={addToCartMutation.isPending}
-                  className="bg-primary hover:bg-blue-600"
+                  className="bg-primary hover:bg-blue-600 ml-2 sm:ml-0"
+                  size="sm"
                 >
                   <ShoppingCart className="h-4 w-4 mr-1" />
                   {addToCartMutation.isPending ? "Menambahkan..." : "Beli"}
@@ -113,13 +114,13 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
   }
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1">
+    <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 w-full max-w-sm mx-auto">
       <img
         src={product.imageUrl || "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=250&fit=crop"}
         alt={product.title}
-        className="w-full h-48 object-cover"
+        className="w-full h-40 sm:h-48 object-cover"
       />
-      <CardContent className="p-4">
+      <CardContent className="p-3 sm:p-4">
         <div className="flex items-center justify-between mb-2">
           {getCategoryBadge(product.categoryId)}
           <div className="flex items-center">
@@ -129,17 +130,17 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
             </span>
           </div>
         </div>
-        <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2">{product.title}</h3>
-        <p className="text-sm text-slate-600 mb-3 line-clamp-2">{product.description}</p>
+        <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2 text-sm sm:text-base">{product.title}</h3>
+        <p className="text-xs sm:text-sm text-slate-600 mb-3 line-clamp-2">{product.description}</p>
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-primary">
+          <span className="text-base sm:text-lg font-bold text-primary truncate flex-1 mr-2">
             Rp {parseFloat(product.price).toLocaleString()}
           </span>
           <Button
             size="sm"
             onClick={() => addToCartMutation.mutate()}
             disabled={addToCartMutation.isPending}
-            className="bg-primary hover:bg-blue-600"
+            className="bg-primary hover:bg-blue-600 flex-shrink-0"
           >
             <ShoppingCart className="h-4 w-4 mr-1" />
             {addToCartMutation.isPending ? "..." : "Beli"}
