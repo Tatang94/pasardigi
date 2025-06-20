@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
-import { insertProductSchema, insertCategorySchema, insertCartItemSchema } from "@shared/schema";
+import { insertProductSchema, insertCategorySchema, insertCartItemSchema, registerUserSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -372,6 +372,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting user:", error);
       res.status(500).json({ message: "Failed to delete user" });
+    }
+  });
+
+  app.post('/api/admin/users', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const createUserData = registerUserSchema.extend({
+        role: z.enum(["customer", "admin", "moderator", "seller"]),
+        status: z.enum(["active", "inactive", "suspended", "banned"]),
+        phoneNumber: z.string().optional(),
+      }).parse(req.body);
+
+      // Hash password
+      const bcrypt = require('bcrypt');
+      const hashedPassword = await bcrypt.hash(createUserData.password, 10);
+
+      const newUser = await storage.createUser({
+        ...createUserData,
+        password: hashedPassword,
+        isAdmin: createUserData.role === 'admin',
+      });
+
+      // Remove password from response
+      const { password, ...userResponse } = newUser;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ message: "Failed to create user" });
     }
   });
 

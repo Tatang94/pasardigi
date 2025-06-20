@@ -40,13 +40,25 @@ const updateUserSchema = z.object({
   status: z.enum(["active", "inactive", "suspended", "banned"]),
 });
 
+const createUserSchema = z.object({
+  firstName: z.string().min(1, "Nama depan harus diisi"),
+  lastName: z.string().min(1, "Nama belakang harus diisi"),
+  email: z.string().email("Email tidak valid"),
+  password: z.string().min(6, "Password minimal 6 karakter"),
+  role: z.enum(["customer", "admin", "moderator", "seller"]),
+  status: z.enum(["active", "inactive", "suspended", "banned"]),
+  phoneNumber: z.string().optional(),
+});
+
 type UpdateUser = z.infer<typeof updateUserSchema>;
+type CreateUser = z.infer<typeof createUserSchema>;
 
 export default function UserManagement() {
   const { user, isLoading, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   // Redirect if not admin
   if (isLoading) {
@@ -129,8 +141,47 @@ export default function UserManagement() {
     },
   });
 
+  // Create user mutation
+  const createUserMutation = useMutation({
+    mutationFn: async (data: CreateUser) => {
+      const response = await fetch("/api/admin/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create user");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({
+        title: "Berhasil",
+        description: "Pengguna berhasil ditambahkan",
+      });
+      setIsCreateDialogOpen(false);
+      resetCreate();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const { register, handleSubmit, setValue, watch, reset } = useForm<UpdateUser>({
     resolver: zodResolver(updateUserSchema),
+  });
+
+  const { register: registerCreate, handleSubmit: handleSubmitCreate, setValue: setValueCreate, watch: watchCreate, reset: resetCreate } = useForm<CreateUser>({
+    resolver: zodResolver(createUserSchema),
+    defaultValues: {
+      role: "customer",
+      status: "active",
+    },
   });
 
   const onEditUser = (user: UserType) => {
@@ -146,6 +197,10 @@ export default function UserManagement() {
   const onSubmitEdit = (data: UpdateUser) => {
     if (!selectedUser) return;
     updateUserMutation.mutate({ id: selectedUser.id, data });
+  };
+
+  const onSubmitCreate = (data: CreateUser) => {
+    createUserMutation.mutate(data);
   };
 
   const onDeleteUser = (id: number) => {
@@ -201,10 +256,14 @@ export default function UserManagement() {
           <h1 className="text-3xl font-bold text-gray-900">Manajemen Pengguna</h1>
           <p className="text-gray-600">Kelola semua pengguna, role, dan status akun</p>
         </div>
-        <Button>
-          <UserPlus className="h-4 w-4 mr-2" />
-          Tambah Pengguna
-        </Button>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <UserPlus className="h-4 w-4 mr-2" />
+              Tambah Pengguna
+            </Button>
+          </DialogTrigger>
+        </Dialog>
       </div>
 
       <Card>
@@ -452,6 +511,80 @@ export default function UserManagement() {
               </Button>
               <Button type="submit" disabled={updateUserMutation.isPending}>
                 {updateUserMutation.isPending ? "Menyimpan..." : "Simpan"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create User Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Tambah Pengguna Baru</DialogTitle>
+            <DialogDescription>
+              Buat akun pengguna baru dengan informasi di bawah ini
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmitCreate(onSubmitCreate)} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="createFirstName">Nama Depan</Label>
+                <Input id="createFirstName" {...registerCreate("firstName")} />
+              </div>
+              <div>
+                <Label htmlFor="createLastName">Nama Belakang</Label>
+                <Input id="createLastName" {...registerCreate("lastName")} />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="createEmail">Email</Label>
+              <Input id="createEmail" type="email" {...registerCreate("email")} />
+            </div>
+            <div>
+              <Label htmlFor="createPassword">Password</Label>
+              <Input id="createPassword" type="password" {...registerCreate("password")} />
+            </div>
+            <div>
+              <Label htmlFor="createPhoneNumber">Nomor Telepon (Opsional)</Label>
+              <Input id="createPhoneNumber" {...registerCreate("phoneNumber")} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="createRole">Role</Label>
+                <Select value={watchCreate("role")} onValueChange={(value) => setValueCreate("role", value as any)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="customer">Customer</SelectItem>
+                    <SelectItem value="seller">Seller</SelectItem>
+                    <SelectItem value="moderator">Moderator</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="createStatus">Status</Label>
+                <Select value={watchCreate("status")} onValueChange={(value) => setValueCreate("status", value as any)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="suspended">Suspended</SelectItem>
+                    <SelectItem value="banned">Banned</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                Batal
+              </Button>
+              <Button type="submit" disabled={createUserMutation.isPending}>
+                {createUserMutation.isPending ? "Membuat..." : "Buat Pengguna"}
               </Button>
             </DialogFooter>
           </form>
