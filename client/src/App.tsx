@@ -12,6 +12,7 @@ import UserDashboard from "@/pages/UserDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AdminPage from "@/pages/AdminPage";
 import AdminOnly from "@/pages/AdminOnly";
+import UserManagement from "@/pages/UserManagement";
 import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
 
@@ -43,6 +44,7 @@ function Router() {
       <Route path="/admin" component={AdminOnly} />
       <Route path="/admin-dashboard" component={isAuthenticated ? AdminDashboard : () => <Redirect to="/auth" />} />
       <Route path="/admin-panel" component={isAuthenticated ? AdminPage : () => <Redirect to="/auth" />} />
+      <Route path="/admin-users" component={isAuthenticated ? UserManagement : () => <Redirect to="/auth" />} />
       <Route component={NotFound} />
     </Switch>
   );

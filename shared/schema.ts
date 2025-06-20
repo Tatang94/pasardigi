@@ -34,8 +34,11 @@ export const users = pgTable("users", {
   lastName: varchar("last_name", { length: 100 }),
   phoneNumber: varchar("phone_number", { length: 20 }),
   profileImageUrl: varchar("profile_image_url"),
+  role: varchar("role", { length: 50 }).notNull().default("customer"), // customer, admin, moderator, seller
+  status: varchar("status", { length: 50 }).notNull().default("active"), // active, inactive, suspended, banned
   isAdmin: boolean("is_admin").default(false),
   isVerified: boolean("is_verified").default(false),
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -59,6 +62,7 @@ export const products = pgTable("products", {
   sellerId: integer("seller_id").references(() => users.id).notNull(),
   imageUrl: varchar("image_url"),
   downloadUrl: varchar("download_url"),
+  status: varchar("status", { length: 50 }).notNull().default("active"), // active, inactive, pending, rejected
   isActive: boolean("is_active").default(true),
   rating: decimal("rating", { precision: 2, scale: 1 }).default("0.0"),
   ratingCount: integer("rating_count").default(0),
